@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 public class DiscordListener extends ListenerAdapter {
@@ -37,18 +38,15 @@ public class DiscordListener extends ListenerAdapter {
         switch (event.getName()) {
             case "업무시작":
                 LocalDateTime startTime = LocalDateTime.now();
-                // 출근시간을 저장하는 로직이 필요함
+                // TODO 출근 시간에 대한 저장
                 event.reply(
                         LocalDate.now().toString() + "의 업무 시작 시간은\n" + startTime.getHour() +"시 " + startTime.getMinute() + "분 입니다!"
                         ).setEphemeral(true).queue();
                 break;
             case "업무종료":
-                String[] workLists = event.getOption("work_list").getAsString().split(", ");
-                for (String s : Arrays.stream(workLists).toList()) {
-                    log.info("option = {}", s);
-                }
-
-
+                List<String> workList = Arrays.stream(event.getOption("work_list").getAsString().split(", ")).toList();
+                workList.forEach(work -> log.info("work = {}", work));
+                // TODO work 목록에 대한 저장 로직 필요
                 LocalDateTime endTime = LocalDateTime.now();
                 event.reply(
                         LocalDate.now().toString() + "의 업무 종료 시간은\n" + endTime.getHour() +"시 " + endTime.getMinute() + "분 입니다!"
