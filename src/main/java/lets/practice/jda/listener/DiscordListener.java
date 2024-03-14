@@ -8,8 +8,10 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
+import net.dv8tion.jda.api.events.guild.scheduledevent.update.ScheduledEventUpdateEndTimeEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.AuditableRestAction;
@@ -28,6 +30,9 @@ public class DiscordListener extends ListenerAdapter {
         TextChannel textChannel = event.getChannel().asTextChannel();
         Message message = event.getMessage();
         log.info("discord message: {}", message.getContentDisplay());
+        log.info("discord user info: id = {}, name = {}", event.getAuthor().getId(), event.getAuthor().getName());
+        log.info("discord member info: id = {}, nickname = {}", event.getMember().getId(), event.getMember().getNickname());
+        log.info("discord server info: name = {}, image = {}", event.getGuild().getName(), event.getGuild().getIconUrl());
     }
 
     /**
@@ -51,6 +56,16 @@ public class DiscordListener extends ListenerAdapter {
                 event.reply(
                         LocalDate.now().toString() + "의 업무 종료 시간은\n" + endTime.getHour() +"시 " + endTime.getMinute() + "분 입니다!"
                 ).setEphemeral(true).queue();
+                break;
+            case "질문하기":
+                // TODO 질문에 대한 저장 로직 필요
+                // TODO word에 대한 중복 여부 파악
+                User receiver = event.getOption("to").getAsMember().getUser();
+                String word = event.getOption("question_word").getAsString();
+                log.info("receiver: {}", receiver.toString());
+                log.info("word: {}", word);
+                log.info("content: {}", event.getOption("content").getAsString());
+                event.reply("성공").setEphemeral(true).queue();
                 break;
             default:
                 System.out.printf("알 수 없는 커멘드입니다! %s used by %#s%n", event.getName(), event.getUser());
