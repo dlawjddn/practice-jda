@@ -26,9 +26,6 @@ public class DiscordListener extends ListenerAdapter {
         log.info("discord server info: name = {}, image = {}", event.getGuild().getName(), event.getGuild().getIconUrl());
     }
 
-    /**
-     * Slash Command 이벤트 처리
-     */
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         switch (event.getName()) {
